@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Dr. Neer!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #1a0f0a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Dancing Script', cursive;
+      padding: 20px 0;
+    }
+
+    /* Video Component Container */
+    .video-wrapper {
+      width: 90vw;
+      max-width: 480px;
+      margin-bottom: 25px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      display: flex;
+    }
+
+    .video-wrapper video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Parchment Container */
+    .container {
+      position: relative;
+      width: 90vw;
+      max-width: 480px;
+      height: 90vh;
+      max-height: 820px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* Parchment Layer */
+    .parchment {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('parchment.jpg');
+      background-size: cover;
+      background-position: center;
+      padding: 45px 35px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Map Cover Layer with Dissolve & Reappear Animation */
+    .map-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('map.jpg');
+      background-size: cover;
+      background-position: center;
+      z-index: 5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding-bottom: 50px;
+      opacity: 1;
+      pointer-events: auto;
+      transition: opacity 3.5s ease-in-out;
+    }
+    .map-overlay.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Interactive Action Button */
+    .action-btn {
+      background: rgba(238, 222, 196, 0.92);
+      border: 2px solid #5c3a21;
+      color: #3b2219;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.3rem;
+      font-weight: bold;
+      padding: 12px 24px;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      transition: transform 0.2s, background 0.2s;
+    }
+    .action-btn:hover {
+      transform: scale(1.05);
+      background: #e2c9a0;
+    }
+
+    /* Letter Scroll Area */
+    .letter-container {
+      width: 100%;
+      max-height: 82%;
+      overflow-y: auto;
+      opacity: 1;
+      transition: opacity 2.5s ease-in-out;
+    }
+    .letter-container.fade-out {
+      opacity: 0;
+    }
+
+    .letter-text {
+      font-size: 1.45rem;
+      line-height: 1.65;
+      color: #2b1810;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      text-shadow: 0.3px 0.3px 0px rgba(0,0,0,0.15);
+    }
+    
+    /* Calligraphic Pen Cursor */
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.2em;
+      background-color: #3b2219;
+      vertical-align: middle;
+      animation: blink 0.8s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Clickable Mischief Managed Banner */
+    .mischief-bar {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2s ease-in-out, transform 0.2s;
+      font-size: 1.9rem;
+      font-weight: bold;
+      color: #3b2219;
+      text-align: center;
+      border-top: 1px solid rgba(92, 58, 33, 0.4);
+      padding-top: 10px;
+      width: 100%;
+      cursor: pointer;
+    }
+    .mischief-bar.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .mischief-bar.visible:hover {
+      transform: scale(1.03);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP COMPONENT: Video -->
+  <div class="video-wrapper">
+    <video controls width="100%" playsinline preload="metadata">
+      <source src="shinchan-birthday.mp4" type="video/mp4; codecs=avc1.42E01E, mp4a.40.2">
+      Your browser does not support HTML5 video.
+    </video>
+  </div>
+
+  <!-- BOTTOM COMPONENT: Parchment Paper -->
+  <div class="container">
+    <!-- Parchment Background with Message & Mischief Managed -->
+    <div class="parchment">
+      <div class="letter-container" id="letterContainer">
+        <div class="letter-text" id="typewriter"></div>
+      </div>
+      <div class="mischief-bar" id="mischief" onclick="resetMap()">Mischief Managed</div>
+    </div>
+
+    <!-- Opening Map Cover -->
+    <div class="map-overlay" id="map">
+      <button class="action-btn" onclick="revealLetter()">
+        I solemnly swear that I'm up to no good
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const message = `Happy Birthday, Dr. Neer! 🥳❤️\n\nWishing you so much health, happiness, and peace of mind this year. Your kindness and sweet nature are so special, and you always have a way of brightening up any room you're in.\n\nI know exam prep has been intense, but all the very best for the exam—you’ve put in the work and you’re going to crush it! I really hope this brings a little smile to your face today and releases your stress a bit for a while. Have the absolute best day! 🎂✨`;
+
+    let typingTimer = null;
+
+    function revealLetter() {
+      const map = document.getElementById('map');
+      const letterContainer = document.getElementById('letterContainer');
+      const typewriter = document.getElementById('typewriter');
+      
+      // Reset elements for opening
+      typewriter.innerHTML = '';
+      letterContainer.classList.remove('fade-out');
+      map.classList.add('fade-out');
+
+      // Wait 1.8 seconds while map disappears, then write text
+      setTimeout(() => {
+        typeWriter(message, 'typewriter', 70);
+      }, 1800);
+    }
+
+    function typeWriter(text, elementId, speed) {
+      let i = 0;
+      const container = document.getElementById(elementId);
+      
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor';
+      
+      function type() {
+        if (i < text.length) {
+          if (text.charAt(i) === '\n') {
+            container.appendChild(document.createElement('br'));
+          } else {
+            container.appendChild(document.createTextNode(text.charAt(i)));
+          }
+          container.appendChild(cursor);
+          i++;
+          typingTimer = setTimeout(type, speed);
+        } else {
+          cursor.remove();
+          // Show 'Mischief Managed' bar when typing finishes
+          document.getElementById('mischief').classList.add('visible');
+        }
+      }
+      type();
+    }
+
+    function resetMap() {
+      const map = document.getElementById('map');
+      const mischief = document.getElementById('mischief');
+      const letterContainer = document.getElementById('letterContainer');
+
+      // Hide Mischief Managed bar & fade out letter
+      mischief.classList.remove('visible');
+      letterContainer.classList.add('fade-out');
+
+      // Reappear the original map slowly
+      setTimeout(() => {
+        map.classList.remove('fade-out');
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
